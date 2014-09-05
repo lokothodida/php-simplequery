@@ -93,7 +93,9 @@ class SimpleQuery {
 
   // Limit the results
   private function limitResults() {
-    $this->results = array_slice($this->results, 0, $this->limit);
+    if ($this->limit) {
+      $this->results = array_slice($this->results, 0, $this->limit);
+    }
   }
 }
 
