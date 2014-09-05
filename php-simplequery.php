@@ -10,6 +10,9 @@
 class SimpleQuery {
   /** properties */
   protected $items,
+            $query,
+            $sort,
+            $limit,
             $results = array();
 
   /** public methods */
@@ -24,8 +27,9 @@ class SimpleQuery {
     $this->results = array();
 
     // ensure that the default elements of the query are set
-    $query = $this->setUpQueryDefaults($query);
-    $sort  = $this->setUpSortingDefaults($sort);
+    $this->query = $this->setUpQueryDefaults($query);
+    $this->sort  = $this->setUpSortingDefaults($sort);
+    $this->limit = $limit;
 
     // filter out items according to the query
     foreach ($this->items as $item) {
@@ -34,6 +38,9 @@ class SimpleQuery {
 
     // sort the results
     $this->sortResults();
+
+    // limit the results
+    $this->limitResults();
 
     return $this->results;
   }
@@ -59,7 +66,19 @@ class SimpleQuery {
 
   // Filter out an item
   private function filterItem($item) {
-    // ...
+    $success = false;
+
+    // Check each field
+    foreach ($this->query as $field => $settings) {
+      $value = $this->getField($item, $field);
+
+      // Validate against each setting
+      // ...
+    }
+
+    if ($success) {
+      $this->results[] = $item;
+    }
   }
 
   // Sort the results
@@ -70,6 +89,11 @@ class SimpleQuery {
   // Sorting implementation
   private function sortResultsImplementation() {
     // ...
+  }
+
+  // Limit the results
+  private function limitResults() {
+    $this->results = array_slice($this->results, 0, $this->limit);
   }
 }
 
