@@ -54,7 +54,13 @@ class SimpleQuery {
   /** private methods */
   // Set up defaults for query
   private function setUpQueryDefaults($query) {
-    // ...
+    foreach ($query as $field => $settings) {
+      // format into an array if it isn't one
+      if (!is_array($settings)) {
+        $query[$field] = array('$eq' => $settings);
+      }
+    }
+
     return $query;
   }
 
@@ -66,19 +72,64 @@ class SimpleQuery {
 
   // Filter out an item
   private function filterItem($item) {
-    $success = false;
+    $success = true;
 
     // Check each field
     foreach ($this->query as $field => $settings) {
       $value = $this->getField($item, $field);
 
       // Validate against each setting
-      // ...
+      foreach ($settings as $setting => $properties) {
+
+        $success = $success && $this->validate($value, $setting, $properties);
+      }
     }
 
     if ($success) {
       $this->results[] = $item;
     }
+  }
+
+  // Validate
+  private function validate($value, $setting, $properties) {
+    $success = false;
+
+    switch ($setting) {
+      // greater than
+      case '$gt':
+        $success = $value > $properties;
+        break;
+      // greater than or equal to
+      case '$gt=':
+        $success = $value >= $properties;
+        break;
+      // less than
+      case '$lt':
+        $success = $value < $properties;
+        break;
+      // less than or equal to
+      case '$lt=':
+        $success = $value <= $properties;
+        break;
+      // strict equality
+      case '$eq=':
+        $success = $value === $properties;
+        break;
+      // has
+      case '$has':
+        // ...
+        break;
+      // in
+      case '$in':
+        $success = in_array($value, $properties);
+        break;
+      // normal equality
+      default:
+        $success = $value == $properties;
+        break;
+    }
+
+    return $success;
   }
 
   // Sort the results
