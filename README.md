@@ -1,9 +1,10 @@
 # PHP SimpleQuery
 Perform queries on PHP arrays
 
-# Features
-* Perform queries on multidimensional arrays
-* Perform queries on custom-defined objects
+## Features
+* Perform queries on:
+  * Associative arrays
+  * Custom objects
 * Sort by multiple criteria
 
 ## Getting started
