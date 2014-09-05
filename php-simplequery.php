@@ -9,7 +9,8 @@
  */
 class SimpleQuery {
   /** properties */
-  protected $items;
+  protected $items,
+            $results = array();
 
   /** public methods */
   // Constructor
@@ -19,11 +20,22 @@ class SimpleQuery {
 
   // Run the query
   public function query($query, $sort = array(), $limit = 0) {
-    $items = $this->items;
+    // reset the results
+    $this->results = array();
 
-    // ...
+    // ensure that the default elements of the query are set
+    $query = $this->setUpQueryDefaults($query);
+    $sort  = $this->setUpSortingDefaults($sort);
 
-    return $items;
+    // filter out items according to the query
+    foreach ($this->items as $item) {
+      $this->filterItem($item);
+    }
+
+    // sort the query
+    uasort($this->results, array($this, 'sortResults'));
+
+    return $this->results;
   }
 
   /** protected methods */
@@ -33,6 +45,17 @@ class SimpleQuery {
   }
 
   /** private methods */
+  // Set up defaults for query
+  private function setUpQueryDefaults($query) {
+    // ...
+    return $query;
+  }
+
+  // Set up defaults for sorting
+  private function setUpSortingDefaults($sort) {
+    // ...
+    return $sort;
+  }
 }
 
 ?>
