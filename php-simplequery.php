@@ -32,8 +32,8 @@ class SimpleQuery {
       $this->filterItem($item);
     }
 
-    // sort the query
-    uasort($this->results, array($this, 'sortResults'));
+    // sort the results
+    $this->sortResults();
 
     return $this->results;
   }
@@ -55,6 +55,21 @@ class SimpleQuery {
   private function setUpSortingDefaults($sort) {
     // ...
     return $sort;
+  }
+
+  // Filter out an item
+  private function filterItem($item) {
+    // ...
+  }
+
+  // Sort the results
+  private function sortResults() {
+    // ...
+  }
+
+  // Sorting implementation
+  private function sortResultsImplementation() {
+    // ...
   }
 }
 
