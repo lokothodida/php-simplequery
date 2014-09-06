@@ -55,9 +55,17 @@ class SimpleQuery {
   // Set up defaults for query
   private function setUpQueryDefaults($query) {
     foreach ($query as $field => $settings) {
-      // format into an array if it isn't one
       if (!is_array($settings)) {
+        // format into an array if it isn't one
         $query[$field] = array('$eq' => $settings);
+      } else {
+        // if an array is provided ...
+        // ...
+      }
+
+      // case sensitivity
+      if (!isset($query[$field]['$cs'])) {
+        $query[$field]['$cs'] = true;
       }
     }
 
@@ -79,9 +87,10 @@ class SimpleQuery {
       $value = $this->getField($item, $field);
 
       // Validate against each setting
-      foreach ($settings as $setting => $properties) {
+      $caseSensitive = $settings['$cs'];
 
-        $success = $success && $this->validate($value, $setting, $properties);
+      foreach ($settings as $setting => $properties) {
+        $success = $success && $this->validate($value, $caseSensitive, $setting, $properties);
       }
     }
 
@@ -91,8 +100,17 @@ class SimpleQuery {
   }
 
   // Validate
-  private function validate($value, $setting, $properties) {
+  private function validate($value, $cs, $setting, $properties) {
     $success = false;
+
+    // Case-sensitive switch
+    if (!$cs) {
+      if (is_array($value)) {
+        $value = array_map($value, 'strtolower');
+      } else {
+        $value = strtolower($value);
+      }
+    }
 
     switch ($setting) {
       // greater than
@@ -117,11 +135,22 @@ class SimpleQuery {
         break;
       // has
       case '$has':
-        // ...
+        $success = true;
+
+        // Check if each $property occurs in $value
+        foreach ($properties as $property) {
+          $pos     = strpos($value, $property); // string position
+          $success = $success && ($pos !== false && $pos > -1);
+        }
+
         break;
       // in
       case '$in':
         $success = in_array($value, $properties);
+        break;
+      // case sensitivity
+      case '$cs':
+        $success = true;
         break;
       // normal equality
       default:
