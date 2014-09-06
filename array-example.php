@@ -48,7 +48,7 @@ $queries[] = array(
 $queries[] = array(
   'lname' => array(
     '$cs'  => false,
-    '$has'   => 'fre',
+    '!$has'   => 'fre',
   ),
 );
 
