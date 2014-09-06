@@ -5,7 +5,7 @@
  * Version:       0.1
  * Description:   Perform queries on PHP arrays
  * Author:        Lawrence Okoth-Odida
- * Documentation: https://github.com/lokothodida/wiki/
+ * Documentation: https://github.com/lokothodida/php-simplequery/wiki/
  */
 class SimpleQuery {
   /** constants*/
