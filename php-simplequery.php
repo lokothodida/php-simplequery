@@ -8,6 +8,9 @@
  * Documentation: https://github.com/lokothodida/wiki/
  */
 class SimpleQuery {
+  /** constants*/
+  const NOEXIST = 'NO_EXIST';
+
   /** properties */
   protected $items,
             $query,
@@ -48,7 +51,7 @@ class SimpleQuery {
   /** protected methods */
   // Get a field from an item
   protected function getField($item, $field) {
-    return $item[$field];
+    return isset($item[$field]) ? $item[$field] : self::NOEXIST;
   }
 
   /** private methods */
@@ -63,12 +66,16 @@ class SimpleQuery {
         // ...
       }
 
+      // has
+      if (isset($query[$field]['$has']) && !is_array($query[$field]['$has'])) {
+        $query[$field]['$has'] = array($query[$field]['$has']);
+      }
+
       // case sensitivity
       if (!isset($query[$field]['$cs'])) {
         $query[$field]['$cs'] = true;
       }
     }
-
     return $query;
   }
 
@@ -137,10 +144,11 @@ class SimpleQuery {
       case '$has':
         $success = true;
 
-        // Check if each $property occurs in $value
+        // Check if each $property occurs in $value (be it an array or a string)
+        $isValueAnArray = is_array($value);
         foreach ($properties as $property) {
-          $pos     = strpos($value, $property); // string position
-          $success = $success && ($pos !== false && $pos > -1);
+          $pos     = $isValueAnArray ? in_array($property, $value) : strpos($value, $property);
+          $success = $success && $pos !== false;
         }
 
         break;
@@ -148,7 +156,12 @@ class SimpleQuery {
       case '$in':
         $success = in_array($value, $properties);
         break;
-      // case sensitivity
+      // check if value exists
+      case '$set':
+        $noExist = $value == self::NOEXIST;
+        $success = $properties ? !$noExist : $noExist;
+        break;
+      // case sensitivity (not an actual operator)
       case '$cs':
         $success = true;
         break;
