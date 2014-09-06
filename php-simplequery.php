@@ -176,12 +176,35 @@ class SimpleQuery {
 
   // Sort the results
   private function sortResults() {
-    // ...
+    uasort($this->results, array($this, 'sortResultsImplementation'));
   }
 
   // Sorting implementation
-  private function sortResultsImplementation() {
-    // ...
+  private function sortResultsImplementation($itemA, $itemB) {
+    $score = 0;
+
+    // run through each sorting field, aggregating the score
+    foreach ($this->sort as $field => $order) {
+      // check field values
+      $itemAValue = $this->getField($itemA, $field);
+      $itemBValue = $this->getField($itemB, $field);
+
+      if (in_array($order, array('asc,' 'desc'))) {
+        // Check regular ascending/descending order
+        // If the values are arrays, check the array lengths instead
+        $itemAValue = is_array($itemAValue) ? count($itemAValue) : $itemAValue;
+        $itemBValue = is_array($itemBValue) ? count($itemBValue) : $itemBValue;
+
+        // compare numbers if the values are numeric; strings otherwise
+        $comparison = (is_numeric($itemAValue) && is_numeric($itemBValue)) ? cmp($itemAValue, $itemBValue) : strcmp($itemAValue, $itemBValue);
+        $score += ($order == 'asc' ? $comparison : -$comparison);
+      } else {
+        // custom user callback
+        $score += call_user_func_array($order, array($itemAValue, $itemBValue));
+      }
+    }
+
+    return $score;
   }
 
   // Limit the results
