@@ -103,7 +103,7 @@ class SimpleQuery {
 
   // Filter out an item
   private function filterItem($item) {
-    // Keep track of the success status (before the loop, its true (invariant))
+    // Keep track of the success status (before the loop, it is true (invariant))
     $success = true;
 
     // Check each field
