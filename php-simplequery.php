@@ -20,12 +20,12 @@ class SimpleQuery {
 
   /** public methods */
   // Constructor
-  public function __construct($items) {
+  public function __construct(array $items) {
     $this->items = $items;
   }
 
   // Run the query
-  public function query($query, $sort = array(), $limit = 0) {
+  public function query(array $query, array $sort = array(), $limit = 0) {
     // reset the results
     $this->results = array();
 
