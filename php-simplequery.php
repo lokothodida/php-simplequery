@@ -66,16 +66,32 @@ class SimpleQuery {
         // ...
       }
 
-      // has
-      if (isset($query[$field]['$has']) && !is_array($query[$field]['$has'])) {
-        $query[$field]['$has'] = array($query[$field]['$has']);
-      }
+      // Fix the settings to be arrays
+      $query = $this->fixSettingsToArrays(array('$has'), $query, $field);
 
       // case sensitivity
       if (!isset($query[$field]['$cs'])) {
         $query[$field]['$cs'] = true;
       }
     }
+
+    return $query;
+  }
+
+  // Fix settings that are strings into arrays (correct formatting)
+  private function fixSettingsToArrays($settings, $query, $field) {
+    // Include negations
+    foreach ($settings as $setting) {
+      $settings[] = '!' . $setting;
+    }
+
+    // Now fix the formatting
+    foreach ($settings as $setting) {
+      if (isset($query[$field][$setting]) && !is_array($query[$field][$setting])) {
+        $query[$field][$setting] = array($query[$field][$setting]);
+      }
+    }
+
     return $query;
   }
 
@@ -121,6 +137,14 @@ class SimpleQuery {
       } else {
         $value = strtolower($value);
       }
+    }
+
+    // Check if we have a negation in place
+    $negation = substr($setting, 0, 1) == '!';
+
+    if ($negation) {
+      // Shave off the negation sign for now
+      $setting = substr($setting, 1);
     }
 
     switch ($setting) {
@@ -169,10 +193,19 @@ class SimpleQuery {
       case '$cs':
         $success = true;
         break;
+      // custom user function
+      case '$custom':
+        $success = call_user_func_array($properties, array($value));
+        break;
       // normal equality
       default:
         $success = $value == $properties;
         break;
+    }
+
+    // Now negate the result if we originally had a negation
+    if ($negation) {
+      $success = !$success;
     }
 
     return $success;
