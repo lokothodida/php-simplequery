@@ -32,7 +32,7 @@ class SimpleQuery {
     // ensure that the default elements of the query are set
     $this->query = $this->setUpQueryDefaults($query);
     $this->sort  = $this->setUpSortingDefaults($sort);
-    $this->limit = $limit;
+    $this->limit = (int) $limit;
 
     // filter out items according to the query
     foreach ($this->items as $item) {
@@ -254,7 +254,11 @@ class SimpleQuery {
   // Limit the results
   private function limitResults() {
     if ($this->limit) {
-      $this->results = array_slice($this->results, 0, $this->limit);
+      // set the correct starting position
+      $start = ($this->limit < 0) ? $this->limit : 0);
+
+      // slice the results
+      $this->results = array_slice($this->results, $start, abs($this->limit));
     }
   }
 }
