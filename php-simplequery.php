@@ -87,20 +87,24 @@ class SimpleQuery {
 
   // Filter out an item
   private function filterItem($item) {
+    // Keep track of the success status (before the loop, its true (invariant))
     $success = true;
 
     // Check each field
     foreach ($this->query as $field => $settings) {
+      // Get the value from the field
       $value = $this->getField($item, $field);
 
-      // Validate against each setting
+      // Check the case sensitivity
       $caseSensitive = $settings['$cs'];
 
+      // Validate against each setting, accumulating the successes
       foreach ($settings as $setting => $properties) {
         $success = $success && $this->validate($value, $caseSensitive, $setting, $properties);
       }
     }
 
+    // Add the item if it passed all of the validation tests
     if ($success) {
       $this->results[] = $item;
     }
@@ -176,35 +180,42 @@ class SimpleQuery {
 
   // Sort the results
   private function sortResults() {
+    // Use PHP's built-in sorting algorithm
     uasort($this->results, array($this, 'sortResultsImplementation'));
   }
 
   // Sorting implementation
   private function sortResultsImplementation($itemA, $itemB) {
+    // Keep track of a score
     $score = 0;
 
-    // run through each sorting field, aggregating the score
+    // Eun through each sorting field, aggregating the score
     foreach ($this->sort as $field => $order) {
-      // check field values
+      // Check field values
       $itemAValue = $this->getField($itemA, $field);
       $itemBValue = $this->getField($itemB, $field);
 
-      if (in_array($order, array('asc,' 'desc'))) {
+      if (in_array($order, array('asc,', 'desc'))) {
         // Check regular ascending/descending order
-        // If the values are arrays, check the array lengths instead
-        $itemAValue = is_array($itemAValue) ? count($itemAValue) : $itemAValue;
-        $itemBValue = is_array($itemBValue) ? count($itemBValue) : $itemBValue;
-
-        // compare numbers if the values are numeric; strings otherwise
-        $comparison = (is_numeric($itemAValue) && is_numeric($itemBValue)) ? cmp($itemAValue, $itemBValue) : strcmp($itemAValue, $itemBValue);
-        $score += ($order == 'asc' ? $comparison : -$comparison);
+        $score += $this->sortResultsComparison($itemAValue, $itemBValue, $order);
       } else {
-        // custom user callback
+        // Use a custom user-defined callback
         $score += call_user_func_array($order, array($itemAValue, $itemBValue));
       }
     }
 
     return $score;
+  }
+
+  // Comparison between two items based on a field
+  private function sortResultsComparison($itemAValue, $itemBValue, $order) {
+    // If the values are arrays, check the array lengths instead
+    $itemAValue = is_array($itemAValue) ? count($itemAValue) : $itemAValue;
+    $itemBValue = is_array($itemBValue) ? count($itemBValue) : $itemBValue;
+
+    // compare numbers if the values are numeric; strings otherwise
+    $comparison = (is_numeric($itemAValue) && is_numeric($itemBValue)) ? cmp($itemAValue, $itemBValue) : strcmp($itemAValue, $itemBValue);
+    return ($order == 'asc' ? $comparison : -$comparison);
   }
 
   // Limit the results
