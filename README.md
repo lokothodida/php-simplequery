@@ -9,7 +9,7 @@ Perform queries on PHP arrays.
 
 ```php
 // instantiate SimpleQuery
-$sq = new SimpleQuery($items = array(/* your collection of data */));
+$sq = new SimpleQuery($items = array( /* your collection of data */ ));
 
 // Set up the $query parameter, dictating the filtering
 $query = array(
@@ -19,14 +19,12 @@ $query = array(
 );
 
 // Sorting (youngest to oldest, in alphabetical order of surname)
-$sort = array( 'age' => 'desc','surname' => 'asc' );
+$sort = array( 'age' => 'desc', 'surname' => 'asc' );
 
 // Run the query method to get your results
 $results = $sq->query($query, $sort);
 
-foreach ($results as $result) {
-  // do as you want with each result
-}
+foreach ($results as $result) { /* do as you want with each result */ }
 ```
 
 ## Getting started
