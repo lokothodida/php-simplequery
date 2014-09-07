@@ -255,7 +255,7 @@ class SimpleQuery {
   private function limitResults() {
     if ($this->limit) {
       // set the correct starting position
-      $start = ($this->limit < 0) ? $this->limit : 0);
+      $start = ($this->limit < 0) ? $this->limit : 0;
 
       // slice the results
       $this->results = array_slice($this->results, $start, abs($this->limit));
