@@ -1,5 +1,5 @@
 # PHP SimpleQuery
-Perform queries on PHP arrays
+Perform queries on PHP arrays.
 
 ## Features
 * Perform queries on:
@@ -13,23 +13,22 @@ $sq = new SimpleQuery($items = array(/* your collection of data */));
 
 // Set up the $query parameter, dictating the filtering
 $query = array(
-  'gender'     => 'm',                                     // querying for men...
-  'age'        => array( '$gt=' => 18, '$lt' => 25 ),      // ...aged between 18 and 25...
-  'blood-type' => array( '$in' => array('A', 'B', 'AB') ), // ...with blood type A, B or AB
+  'gender'     => 'm',                                // querying for men...
+  'age'        => array( '$gt=' => 18, '$lt' => 25 ), // ...aged between 18 and 25...
+  'blood-type' => array( '$in' => array('A', 'B') ),  // ...with blood type A or B
 );
 
 // Sorting
 $sort = array(
-  'age' => 'desc',    // youngest to oldest...
-  'surname' => 'asc', // ...in alphabetical order of surname
+  'age'     => 'desc', // youngest to oldest...
+  'surname' => 'asc',  // ...in alphabetical order of surname
 );
 
 // Run the query method to get your results
 $results = $sq->query($query, $sort);
 
-// Do with your result what you want
 foreach ($results as $result) {
-  // ...
+  // do as you want with each result
 }
 ```
 
@@ -43,4 +42,4 @@ Full API and examples are available on the [wiki](//github.com/lokothodida/php-s
 *PHP SimpleQuery* is licensed under [MIT](http://www.opensource.org/licenses/MIT).
 
 ## Copright
-All rights reserved.
+&copy; All rights reserved. Inspired by [MongoDB](http://www.mongodb.org/).
