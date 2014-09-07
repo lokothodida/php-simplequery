@@ -2,7 +2,7 @@
 
 /**
  * Title:         PHP SimpleQuery
- * Version:       0.1
+ * Version:       0.1.1
  * Description:   Perform queries on PHP arrays
  * Author:        Lawrence Okoth-Odida
  * Documentation: https://github.com/lokothodida/php-simplequery/wiki/
@@ -133,7 +133,7 @@ class SimpleQuery {
     // Case-sensitive switch
     if (!$cs) {
       if (is_array($value)) {
-        $value = array_map($value, 'strtolower');
+        $value = array_map('strtolower', $value);
       } else {
         $value = strtolower($value);
       }
@@ -186,7 +186,10 @@ class SimpleQuery {
         break;
       // check if value exists
       case '$set':
-        $noExist = $value == self::NOEXIST;
+        // ensure case is correct
+        $selfNoExist = $cs ? self::NOEXIST : strtolower(self::NOEXIST);
+        $noExist = $value == $selfNoExist;
+
         $success = $properties ? !$noExist : $noExist;
         break;
       // case sensitivity (not an actual operator)
