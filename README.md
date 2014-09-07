@@ -25,9 +25,7 @@ $sort = array(
 );
 
 // Run the query method to get your results
-$results = $sq->query($query, $sort);
-
-foreach ($results as $result) {
+foreach ($sq->query($query, $sort) as $result) {
   // do as you want with each result
 }
 ```
@@ -42,4 +40,4 @@ Full API and examples are available on the [wiki](//github.com/lokothodida/php-s
 *PHP SimpleQuery* is licensed under [MIT](http://www.opensource.org/licenses/MIT).
 
 ## Copright
-&copy; All rights reserved. Inspired by [MongoDB](http://www.mongodb.org/).
+&copy; Lawrence Okoth-Odida. All rights reserved. Inspired by [MongoDB](http://www.mongodb.org/).
